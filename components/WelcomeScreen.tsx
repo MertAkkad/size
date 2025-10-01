@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { CameraIcon } from './icons/CameraIcon';
+import { VideoIcon } from './icons/VideoIcon';
 import { RulerIcon } from './icons/RulerIcon';
 
 interface WelcomeScreenProps {
@@ -10,9 +9,9 @@ interface WelcomeScreenProps {
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStart }) => {
   return (
     <div className="text-center flex flex-col items-center justify-center h-full animate-fade-in">
-      <h2 className="text-3xl font-bold text-slate-100 mb-4">Get Your Perfect Fit</h2>
+      <h2 className="text-3xl font-bold text-slate-100 mb-4">Get Your 3D Fit</h2>
       <p className="text-slate-400 mb-8 max-w-xs">
-        Use your phone's camera to measure your foot and find your accurate shoe size.
+        Use your phone's camera to record a short video of your foot for an accurate shoe size.
       </p>
 
       <div className="space-y-6 text-left w-full max-w-xs bg-slate-900/50 p-6 rounded-lg border border-slate-700">
@@ -28,11 +27,11 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStart }) => {
         </div>
         <div className="flex items-start space-x-4">
              <div className="flex-shrink-0 bg-slate-700 rounded-full p-2">
-                <CameraIcon className="w-6 h-6 text-cyan-400" />
+                <VideoIcon className="w-6 h-6 text-cyan-400" />
             </div>
             <div>
-                <h4 className="font-semibold text-slate-200">2. Take a Photo</h4>
-                <p className="text-slate-400 text-sm">Take a clear, top-down photo, ensuring both your full foot and the card are visible.</p>
+                <h4 className="font-semibold text-slate-200">2. Record a Video</h4>
+                <p className="text-slate-400 text-sm">Record a 5-second video, slowly moving the camera around your foot for a 3D view.</p>
             </div>
         </div>
       </div>

@@ -1,17 +1,17 @@
 import React, { useState, useCallback } from 'react';
 import { AppState, ShoeSizeResult } from './types';
 import WelcomeScreen from './components/WelcomeScreen';
-import CameraCapture from './components/CameraCapture';
+import VideoCapture from './components/VideoCapture';
 import LoadingSpinner from './components/LoadingSpinner';
 import ResultsDisplay from './components/ResultsDisplay';
 import ErrorDisplay from './components/ErrorDisplay';
 import ApiKeyPrompt from './components/ApiKeyPrompt';
-import { analyzeFootImage } from './services/geminiService';
+import { analyzeFootImages } from './services/geminiService';
 import { ShoeIcon } from './components/icons/ShoeIcon';
+import { extractFramesFromVideo } from './utils/videoUtils';
 
 const App: React.FC = () => {
   const [appState, setAppState] = useState<AppState>(AppState.Welcome);
-  const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [analysisResult, setAnalysisResult] = useState<ShoeSizeResult | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
   
@@ -22,29 +22,27 @@ const App: React.FC = () => {
   };
   
   const handleReset = () => {
-    setCapturedImage(null);
     setAnalysisResult(null);
     setErrorMessage('');
     setAppState(AppState.Welcome);
   };
 
-  const handleAnalyze = useCallback(async (imageDataUrl: string) => {
-    // Safety check, though the UI should prevent this.
+  const handleAnalyze = useCallback(async (videoBlob: Blob) => {
     if (!apiKey) {
         setErrorMessage("API Key is not configured.");
         setAppState(AppState.Error);
         return;
     }
 
-    setCapturedImage(imageDataUrl);
     setAppState(AppState.Loading);
     try {
-      const base64Data = imageDataUrl.split(',')[1];
-      if (!base64Data) {
-        throw new Error("Invalid image data format.");
+      // Extract 3 frames from the video for analysis
+      const frames = await extractFramesFromVideo(videoBlob, 3);
+      if (frames.length === 0) {
+        throw new Error("Could not extract frames from the video. Please try recording again.");
       }
 
-      const result = await analyzeFootImage(base64Data, apiKey);
+      const result = await analyzeFootImages(frames, apiKey);
       setAnalysisResult(result);
       setAppState(AppState.Results);
     } catch (error) {
@@ -63,7 +61,7 @@ const App: React.FC = () => {
       case AppState.Welcome:
         return <WelcomeScreen onStart={handleStart} />;
       case AppState.Capture:
-        return <CameraCapture onAnalyze={handleAnalyze} />;
+        return <VideoCapture onAnalyze={handleAnalyze} />;
       case AppState.Loading:
         return <LoadingSpinner />;
       case AppState.Results:
