@@ -1,0 +1,7 @@
+{
+  "name": "Copy of AI Foot Scanner",
+  "description": "A mobile web application that uses AI to analyze a photo of your foot and estimate your shoe size. Simply take a picture of your foot next to a standard credit card for scale.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
